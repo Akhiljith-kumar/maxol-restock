@@ -1,38 +1,179 @@
-.App {
-  text-align: center;
+:root {
+  --primary: #FBD83C;
+  --secondary: #0063A5;
+  --surface: #F4F4F4;
+  --text: #000000;
+  --border: #E0E0E0;
+  --radius: 4px;
+  --gap: 12px;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+* { box-sizing: border-box; margin:0; padding:0; font-family: sans-serif; }
+body { background: #fff; color: var(--text); }
+.header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: var(--gap);
+  background: var(--secondary); color: #fff;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.header button { 
+  background: #fff; color: var(--secondary);
+  border: none; padding: 6px 12px; border-radius: var(--radius);
+  cursor: pointer; font-weight: bold;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.section {
+  margin: var(--gap);
+}
+.section h2 {
+  color: var(--secondary); margin-bottom: var(--gap);
+}
+.item-row {
+  display: grid;
+  grid-template-columns: 30px 1fr 60px 40px 40px;
+  gap: var(--gap);
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  background: var(--surface);
+  padding: var(--gap);
+  border-radius: var(--radius);
+  margin-bottom: var(--gap);
+  border: 1px solid var(--border);
+}
+.item-row input[type="number"] {
+  width: 100%; padding: 4px; border: 1px solid var(--border); border-radius: var(--radius);
+}
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  display: flex; background: #fff; border-top: 1px solid var(--border);
+}
+.bottom-nav button {
+  flex:1; padding: var(--gap) 0; border:none; background:none; cursor:pointer;
+  font-weight: bold; color: var(--secondary);
+}
+.bottom-nav .active { background: var(--primary); color: var(--text); }
+
+.new-item-form {
+  display: flex;
+  gap: 8px;
+}
+.new-item-form input {
+  flex: 1;
+  padding: 4px 8px;
+  border: 1px solid #C4C4C4;
+  border-radius: 4px;
+}
+.new-item-form button {
+  padding: 4px 8px;
+  border: none;
+  background: #E0E0E0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+/* + button next to brand name */
+.btn-add-variant {
+  border: none;
+  background: none;
+  font-size: 1em;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+/* inline “add variant” form */
+.new-variant-form {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+.new-variant-form input {
+  flex: 1;
+  padding: 4px 8px;
+  border: 1px solid #C4C4C4;
+  border-radius: 4px;
+}
+.new-variant-form button {
+  padding: 4px 8px;
+  border: none;
+  background: #E0E0E0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* optional: group each brand block */
+.brand-block {
+  margin-bottom: 24px;
+}
+.brand-header {
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #E1E1E1;
+}
+.header-controls {
+  display: flex;
+  gap: 12px;
+}
+.btn-edit-toggle {
+  padding: 4px 8px;
+  border: none;
+  background: #E0E0E0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-edit-toggle.active {
+  background: #FF8C00;    /* or any accent to show active */
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+/* delete brand (in header) */
+.btn-delete-brand {
+  margin-left: 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: #C1272D;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* delete variant (in row) */
+.btn-delete-variant {
+  margin-left: auto;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1em;
+  color: #C1272D;
+}
+
+/* keep your existing .brand-header, .btn-add-variant, .item-row, .count-stepper, .bottom-nav, etc. */
+.header-controls button,
+.btn-new-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-new-item i,
+.btn-edit-toggle i,
+.btn-delete-brand i,
+.btn-delete-variant i,
+.btn-add-variant i,
+.btn-box i,
+.btn-complete i,
+.count-stepper i {
+  font-size: 1.2em;
+  vertical-align: middle;
+}
+
+/* adjust stepper buttons */
+.count-stepper button {
+  background: none;
+  border: none;
+  cursor: pointer;
 }
