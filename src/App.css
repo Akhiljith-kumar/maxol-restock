@@ -21,6 +21,7 @@ body { background: #fff; color: var(--text); }
 }
 .section {
   margin: var(--gap);
+  margin-bottom: 50px;
 }
 .section h2 {
   color: var(--secondary); margin-bottom: var(--gap);

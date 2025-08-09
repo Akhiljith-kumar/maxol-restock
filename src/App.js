@@ -2,8 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import 'remixicon/fonts/remixicon.css';
 import './App.css';
+import { buildSeedData } from './seedData';
 
 import { subscribeToData, saveData } from './firebase';
+
+const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+const byEntryKey = (a, b) => collator.compare(a[0], b[0]); // a,b are [key, value]
 
 const defaultVariantState = () => ({
   check: false,
@@ -24,6 +28,7 @@ const initialData = {
 };
 
 function App() {
+  
   const [data, setData]     = useState(initialData);
   const [view, setView]     = useState('can');
   const [editing, setEditing] = useState(false);
@@ -32,6 +37,19 @@ function App() {
   const [newBrand, setNewBrand]                     = useState('');
   const [addingVariantBrand, setAddingVariantBrand] = useState(null);
   const [newVariant, setNewVariant]                 = useState('');
+
+  const seedDb = async () => {
+  if (!window.confirm('Seed Firestore with the predefined items?')) return;
+  const seed = buildSeedData();
+  setData(seed);
+  try {
+    await saveData(seed);
+    alert('Seeded!');
+  } catch (e) {
+    console.error(e);
+    alert('Seeding failed: ' + (e.message || e.code));
+  }
+};
 
   // Subscribe to Firestore on mount
 useEffect(() => {
@@ -191,6 +209,7 @@ const updateCount = (cat, brand, variant, raw) => {
           <i className="ri-refresh-line" /> Start again
         </button>
         <div className="header-controls">
+
           <button
             className={`btn-edit-toggle ${editing ? 'active' : ''}`}
             onClick={() => setEditing(e => !e)}
@@ -227,7 +246,7 @@ const updateCount = (cat, brand, variant, raw) => {
 
       {/* MAIN LIST */}
       <section className="section">
-        {Object.entries(activeData).map(([brand, variants]) => (
+        {Object.entries(activeData).sort(byEntryKey).map(([brand, variants]) => (
           <div key={brand} className="brand-block">
             <h2 className="brand-header">
               {brand.charAt(0).toUpperCase() + brand.slice(1)}
@@ -267,7 +286,7 @@ const updateCount = (cat, brand, variant, raw) => {
               </div>
             )}
 
-            {Object.entries(variants).map(([variant, vals]) => (
+            {Object.entries(variants).sort(byEntryKey).map(([variant, vals]) => (
               <div className="item-row" key={variant}>
                 <input
                   type="checkbox"
