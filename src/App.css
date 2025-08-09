@@ -12,6 +12,7 @@ body { background: #fff; color: var(--text); }
 .header {
   display: flex; justify-content: space-between; align-items: center;
   padding: var(--gap);
+  flex-direction: column;
   background: var(--secondary); color: #fff;
 }
 .header button { 
@@ -28,17 +29,17 @@ body { background: #fff; color: var(--text); }
 }
 .item-row {
   display: grid;
-  grid-template-columns: 30px 1fr 60px 40px 40px;
+  grid-template-columns: 30px 1fr 80px 40px 40px;
   gap: var(--gap);
   align-items: center;
   background: var(--surface);
-  padding: var(--gap);
+  padding: 5px;
   border-radius: var(--radius);
   margin-bottom: var(--gap);
   border: 1px solid var(--border);
 }
 .item-row input[type="number"] {
-  width: 100%; padding: 4px; border: 1px solid var(--border); border-radius: var(--radius);
+  width: 25px; padding: 4px; border: 1px solid var(--border); border-radius: var(--radius);
 }
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0;
@@ -105,7 +106,7 @@ body { background: #fff; color: var(--text); }
 .brand-header {
   display: flex;
   align-items: center;
-  font-size: 1.1rem;
+  font-size: 23px;
   margin-bottom: 8px;
 }
 
@@ -115,11 +116,14 @@ body { background: #fff; color: var(--text); }
   align-items: center;
   padding: 12px;
   border-bottom: 1px solid #E1E1E1;
+ position: sticky;      /* ← pin while scrolling */
+  top: 0;
+  z-index: 1000;
 }
 .header-controls {
-  display: flex;
-  gap: 12px;
+  margin-top: 10px;
 }
+
 .btn-edit-toggle {
   padding: 4px 8px;
   border: none;
@@ -177,4 +181,22 @@ body { background: #fff; color: var(--text); }
   background: none;
   border: none;
   cursor: pointer;
+}
+
+.header-sec-1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.count-stepper {
+  display: flex;
+}
+
+.btn-minus {
+  font-size: 20px;
+}
+.btn-plus {
+  font-size: 20px;
 }

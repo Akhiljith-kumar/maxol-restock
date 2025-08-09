@@ -18,8 +18,8 @@ const defaultVariantState = () => ({
 const makeBrandTemplate = () => ({});
 
 const tabs = [
-  { key: 'can',        label: 'CAN' },
-  { key: 'bottles',    label: 'Bottles' },
+  { key: 'can', label: 'CAN' },
+  { key: 'bottles', label: 'Bottles' },
   { key: 'bigBottles', label: 'Big Bottles' },
 ];
 
@@ -28,175 +28,175 @@ const initialData = {
 };
 
 function App() {
-  
-  const [data, setData]     = useState(initialData);
-  const [view, setView]     = useState('can');
+
+  const [data, setData] = useState(initialData);
+  const [view, setView] = useState('can');
   const [editing, setEditing] = useState(false);
 
-  const [showNewBrandForm, setShowNewBrandForm]     = useState(false);
-  const [newBrand, setNewBrand]                     = useState('');
+  const [showNewBrandForm, setShowNewBrandForm] = useState(false);
+  const [newBrand, setNewBrand] = useState('');
   const [addingVariantBrand, setAddingVariantBrand] = useState(null);
-  const [newVariant, setNewVariant]                 = useState('');
+  const [newVariant, setNewVariant] = useState('');
 
   const seedDb = async () => {
-  if (!window.confirm('Seed Firestore with the predefined items?')) return;
-  const seed = buildSeedData();
-  setData(seed);
-  try {
-    await saveData(seed);
-    alert('Seeded!');
-  } catch (e) {
-    console.error(e);
-    alert('Seeding failed: ' + (e.message || e.code));
-  }
-};
+    if (!window.confirm('Seed Firestore with the predefined items?')) return;
+    const seed = buildSeedData();
+    setData(seed);
+    try {
+      await saveData(seed);
+      alert('Seeded!');
+    } catch (e) {
+      console.error(e);
+      alert('Seeding failed: ' + (e.message || e.code));
+    }
+  };
 
   // Subscribe to Firestore on mount
-useEffect(() => {
-  const mount = async () => {
-    const unsub = await subscribeToData(remote => {
-      setData(remote || initialData);
-      if (!(remote || initialData)[view]) setView('can');
-    });
-    return unsub;
-  };
-  const cleanupPromise = mount();
-  return () => { cleanupPromise.then(unsub => unsub && unsub()); };
-}, []); // only once
+  useEffect(() => {
+    const mount = async () => {
+      const unsub = await subscribeToData(remote => {
+        setData(remote || initialData);
+        if (!(remote || initialData)[view]) setView('can');
+      });
+      return unsub;
+    };
+    const cleanupPromise = mount();
+    return () => { cleanupPromise.then(unsub => unsub && unsub()); };
+  }, []); // only once
 
-// put this above function App()
-const resetCountsAndFlags = (state) => {
-  const out = {};
-  for (const cat of Object.keys(state)) {
-    const brands = state[cat] || {};
-    const newBrands = {};
-    for (const brand of Object.keys(brands)) {
-      const variants = brands[brand] || {};
-      const newVariants = {};
-      for (const v of Object.keys(variants)) {
-        const vals = variants[v] || {};
-        newVariants[v] = {
-          ...vals,
-          count: 0,
-          box: false,
-          check: false,
-          completed: false,
-        };
+  // put this above function App()
+  const resetCountsAndFlags = (state) => {
+    const out = {};
+    for (const cat of Object.keys(state)) {
+      const brands = state[cat] || {};
+      const newBrands = {};
+      for (const brand of Object.keys(brands)) {
+        const variants = brands[brand] || {};
+        const newVariants = {};
+        for (const v of Object.keys(variants)) {
+          const vals = variants[v] || {};
+          newVariants[v] = {
+            ...vals,
+            count: 0,
+            box: false,
+            check: false,
+            completed: false,
+          };
+        }
+        newBrands[brand] = newVariants;
       }
-      newBrands[brand] = newVariants;
+      out[cat] = newBrands;
     }
-    out[cat] = newBrands;
-  }
-  return out;
-};
+    return out;
+  };
 
-const resetAll = async () => {
-  const updated = resetCountsAndFlags(data);   // keep structure, check/box/completed untouched
-  setData(updated);
-  try {
-    await saveData(updated);             // persist to Firestore
-  } catch (e) {
-    console.error('Reset counts failed', e);
-  }
-  // just tidy the UI bits; keep current view & editing state
-  setShowNewBrandForm(false);
-  setNewBrand('');
-  setAddingVariantBrand(null);
-  setNewVariant('');
-};
-
-const handleAddBrand = async () => {
-  const key = newBrand.trim().toLowerCase();
-  if (!key) return;
-  if (data[view][key]) return alert(`"${key}" already exists in ${view}.`);
-
-  const updated = { ...data, [view]: { ...data[view], [key]: {} } };
-  setData(updated);
-  try {
-    await saveData(updated);
-  } catch (e) {
-    alert('Save failed: ' + (e.message || e.code));
-  }
-
-  setNewBrand('');
-  setShowNewBrandForm(false);
-};
-
-const deleteBrand = (brandKey) => {
-  const { [brandKey]: _, ...rest } = data[view];
-  const updated = { ...data, [view]: rest };
-  setData(updated);
-  saveData(updated).catch(console.error);
-};
-
-const handleAddVariant = (brand) => {
-  const key = newVariant.trim().toLowerCase();
-  if (!key) return;
-  if (data[view][brand][key]) return alert(`"${key}" already exists under ${brand}.`);
-
-  const updated = {
-    ...data,
-    [view]: {
-      ...data[view],
-      [brand]: {
-        ...data[view][brand],
-        [key]: defaultVariantState()
-      }
+  const resetAll = async () => {
+    const updated = resetCountsAndFlags(data);   // keep structure, check/box/completed untouched
+    setData(updated);
+    try {
+      await saveData(updated);             // persist to Firestore
+    } catch (e) {
+      console.error('Reset counts failed', e);
     }
+    // just tidy the UI bits; keep current view & editing state
+    setShowNewBrandForm(false);
+    setNewBrand('');
+    setAddingVariantBrand(null);
+    setNewVariant('');
   };
-  setData(updated);
-  saveData(updated).catch(console.error);
 
-  setAddingVariantBrand(null);
-  setNewVariant('');
-};
+  const handleAddBrand = async () => {
+    const key = newBrand.trim().toLowerCase();
+    if (!key) return;
+    if (data[view][key]) return alert(`"${key}" already exists in ${view}.`);
 
+    const updated = { ...data, [view]: { ...data[view], [key]: {} } };
+    setData(updated);
+    try {
+      await saveData(updated);
+    } catch (e) {
+      alert('Save failed: ' + (e.message || e.code));
+    }
 
-const deleteVariant = (brandKey, variantKey) => {
-  const { [variantKey]: _, ...restVars } = data[view][brandKey];
-  const updated = {
-    ...data,
-    [view]: { ...data[view], [brandKey]: restVars }
+    setNewBrand('');
+    setShowNewBrandForm(false);
   };
-  setData(updated);
-  saveData(updated).catch(console.error);
-};
 
+  const deleteBrand = (brandKey) => {
+    const { [brandKey]: _, ...rest } = data[view];
+    const updated = { ...data, [view]: rest };
+    setData(updated);
+    saveData(updated).catch(console.error);
+  };
 
-const toggleField = (cat, brand, variant, field) => {
-  const updated = {
-    ...data,
-    [cat]: {
-      ...data[cat],
-      [brand]: {
-        ...data[cat][brand],
-        [variant]: {
-          ...data[cat][brand][variant],
-          [field]: !data[cat][brand][variant][field]
+  const handleAddVariant = (brand) => {
+    const key = newVariant.trim().toLowerCase();
+    if (!key) return;
+    if (data[view][brand][key]) return alert(`"${key}" already exists under ${brand}.`);
+
+    const updated = {
+      ...data,
+      [view]: {
+        ...data[view],
+        [brand]: {
+          ...data[view][brand],
+          [key]: defaultVariantState()
         }
       }
-    }
+    };
+    setData(updated);
+    saveData(updated).catch(console.error);
+
+    setAddingVariantBrand(null);
+    setNewVariant('');
   };
-  setData(updated);
-  saveData(updated).catch(console.error);
-};
 
 
-const updateCount = (cat, brand, variant, raw) => {
-  const count = Math.max(0, parseInt(raw, 10) || 0);
-  const updated = {
-    ...data,
-    [cat]: {
-      ...data[cat],
-      [brand]: {
-        ...data[cat][brand],
-        [variant]: { ...data[cat][brand][variant], count }
+  const deleteVariant = (brandKey, variantKey) => {
+    const { [variantKey]: _, ...restVars } = data[view][brandKey];
+    const updated = {
+      ...data,
+      [view]: { ...data[view], [brandKey]: restVars }
+    };
+    setData(updated);
+    saveData(updated).catch(console.error);
+  };
+
+
+  const toggleField = (cat, brand, variant, field) => {
+    const updated = {
+      ...data,
+      [cat]: {
+        ...data[cat],
+        [brand]: {
+          ...data[cat][brand],
+          [variant]: {
+            ...data[cat][brand][variant],
+            [field]: !data[cat][brand][variant][field]
+          }
+        }
       }
-    }
+    };
+    setData(updated);
+    saveData(updated).catch(console.error);
   };
-  setData(updated);
-  saveData(updated).catch(console.error);
-};
+
+
+  const updateCount = (cat, brand, variant, raw) => {
+    const count = Math.max(0, parseInt(raw, 10) || 0);
+    const updated = {
+      ...data,
+      [cat]: {
+        ...data[cat],
+        [brand]: {
+          ...data[cat][brand],
+          [variant]: { ...data[cat][brand][variant], count }
+        }
+      }
+    };
+    setData(updated);
+    saveData(updated).catch(console.error);
+  };
 
 
   const activeData = data[view];
@@ -205,11 +205,11 @@ const updateCount = (cat, brand, variant, raw) => {
     <div className="App">
       {/* HEADER */}
       <header className="header">
-        <button className="btn-reset" onClick={resetAll}>
-          <i className="ri-refresh-line" /> Start again
-        </button>
-        <div className="header-controls">
 
+        <div className='header-sec-1'>
+          <button className="btn-reset" onClick={resetAll}>
+            <i className="ri-refresh-line" /> Start again
+          </button>
           <button
             className={`btn-edit-toggle ${editing ? 'active' : ''}`}
             onClick={() => setEditing(e => !e)}
@@ -217,6 +217,9 @@ const updateCount = (cat, brand, variant, raw) => {
             <i className={`ri-${editing ? 'check-line' : 'edit-line'}`} />
             {editing ? 'Done' : 'Edit'}
           </button>
+        </div>
+
+        <div className="header-controls">
 
           {showNewBrandForm ? (
             <div className="new-item-form">
@@ -242,13 +245,14 @@ const updateCount = (cat, brand, variant, raw) => {
             </div>
           )}
         </div>
+
       </header>
 
       {/* MAIN LIST */}
       <section className="section">
         {Object.entries(activeData).sort(byEntryKey).map(([brand, variants]) => (
           <div key={brand} className="brand-block">
-            <h2 className="brand-header">
+            <h1 className="brand-header">
               {brand.charAt(0).toUpperCase() + brand.slice(1)}
               {editing && (
                 <button
@@ -267,7 +271,7 @@ const updateCount = (cat, brand, variant, raw) => {
               >
                 <i className="ri-add-line" />
               </button>
-            </h2>
+            </h1>
 
             {addingVariantBrand === brand && (
               <div className="new-variant-form">
