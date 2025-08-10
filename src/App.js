@@ -293,6 +293,7 @@ function App() {
             {Object.entries(variants).sort(byEntryKey).map(([variant, vals]) => (
               <div className="item-row" key={variant}>
                 <input
+                  className='item-tick'
                   type="checkbox"
                   checked={vals.check}
                   onChange={() => toggleField(view, brand, variant, 'check')}
@@ -311,6 +312,7 @@ function App() {
                   </button>
                   <input
                     type="number"
+                    className='item-count'
                     value={vals.count}
                     onChange={e =>
                       updateCount(view, brand, variant, e.target.value)
@@ -325,30 +327,36 @@ function App() {
                     <i className="ri-add-line" />
                   </button>
                 </div>
-                <button
-                  className="btn-box"
-                  onClick={() => toggleField(view, brand, variant, 'box')}
-                >
-                  <i
-                    className={
-                      vals.box ? 'ri-stack-fill' : 'ri-stack-line'
+                {!editing && <div class='item-btn-group'>
+                    <button
+                    className="btn-box"
+                    onClick={() => toggleField(view, brand, variant, 'box')}
+                  >
+                    <img
+                      src={
+                        vals.box
+                          ? '/icons/stack-fill.svg'
+                          : '/icons/stack-line.svg'
+                      }
+                      alt="Box Icon"
+                      style={{ width: '20px', height: '20px' }}
+                    />
+                  </button>
+                  <button
+                    className="btn-complete"
+                    onClick={() =>
+                      toggleField(view, brand, variant, 'completed')
                     }
-                  />
-                </button>
-                <button
-                  className="btn-complete"
-                  onClick={() =>
-                    toggleField(view, brand, variant, 'completed')
-                  }
-                >
-                  <i
-                    className={
-                      vals.completed
-                        ? 'ri-checkbox-circle-fill'
-                        : 'ri-checkbox-circle-line'
-                    }
-                  />
-                </button>
+                  >
+                    <i
+                      className={
+                        vals.completed
+                          ? 'ri-checkbox-circle-fill color-green'
+                          : 'ri-checkbox-circle-line'
+                      }
+                    />
+                  </button>
+                </div> }
                 {editing && (
                   <button
                     className="btn-delete-variant"
