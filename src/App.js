@@ -327,7 +327,7 @@ function App() {
                     <i className="ri-add-line" />
                   </button>
                 </div>
-                {!editing && <div class='item-btn-group'>
+                {!editing && <div className='item-btn-group'>
                     <button
                     className="btn-box"
                     onClick={() => toggleField(view, brand, variant, 'box')}
