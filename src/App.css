@@ -29,7 +29,7 @@ body { background: #fff; color: var(--text); }
 }
 .item-row {
   display: grid;
-  grid-template-columns: 30px 1fr 110px 40px 5px;
+  grid-template-columns: 30px 1fr 20px 110px 40px 5px;
   gap: var(--gap);
   align-items: center;
   background: var(--surface);

@@ -198,6 +198,25 @@ function App() {
     saveData(updated).catch(console.error);
   };
 
+  const resetVariantState = (cat, brand, variant) => {
+  const updated = {
+    ...data,
+    [cat]: {
+      ...data[cat],
+      [brand]: {
+        ...data[cat][brand],
+        [variant]: {
+          ...data[cat][brand][variant],
+          count: 0,
+          box: false,
+          completed: false,
+        },
+      },
+    },
+  };
+  setData(updated);
+  saveData(updated).catch(console.error);
+};
 
   const activeData = data[view];
 
@@ -207,7 +226,13 @@ function App() {
       <header className="header">
 
         <div className='header-sec-1'>
-          <button className="btn-reset" onClick={resetAll}>
+          <button className="btn-reset"
+           onClick={() => {
+              if (window.confirm("Are you sure you want to start again? All progress will be lost.")) {
+                resetAll();
+              }
+            }}
+          >
             <i className="ri-refresh-line" /> Start again
           </button>
           <button
@@ -301,6 +326,13 @@ function App() {
                 <label>
                   {variant.charAt(0).toUpperCase() + variant.slice(1)}
                 </label>
+                <button
+                    className="btn-reset-variant"
+                    title="Reset this item"
+                    onClick={() => resetVariantState(view, brand, variant)}
+                  >
+                    <i className="ri-refresh-line" />
+                  </button>
                 <div className="count-stepper">
                   <button
                     className="btn-minus"
