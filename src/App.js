@@ -291,7 +291,7 @@ function App() {
             )}
 
             {Object.entries(variants).sort(byEntryKey).map(([variant, vals]) => (
-              <div className="item-row" key={variant}>
+              <div className={`item-row ${vals.count > 0 || vals.box ? 'need-to-stock-indicator' : ''}`} key={variant}>
                 <input
                   className='item-tick'
                   type="checkbox"

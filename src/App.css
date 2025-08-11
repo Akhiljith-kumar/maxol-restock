@@ -219,6 +219,7 @@ body { background: #fff; color: var(--text); }
     height: 30px;
     width: 30px;
     border: none;
+    background: transparent;
 }
 .btn-complete {
     height: 30px;
@@ -235,4 +236,7 @@ body { background: #fff; color: var(--text); }
 }
 .color-green {
   color: #009100;
+}
+.need-to-stock-indicator{
+    background-color: #d0eaff;
 }
