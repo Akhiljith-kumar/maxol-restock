@@ -56,6 +56,7 @@ function App() {
     const mount = async () => {
       const unsub = await subscribeToData(remote => {
         setData(remote || initialData);
+        console.log(remote)
         if (!(remote || initialData)[view]) setView('can');
       });
       return unsub;
@@ -64,7 +65,6 @@ function App() {
     return () => { cleanupPromise.then(unsub => unsub && unsub()); };
   }, []); // only once
 
-  // put this above function App()
   const resetCountsAndFlags = (state) => {
     const out = {};
     for (const cat of Object.keys(state)) {
@@ -233,15 +233,27 @@ function App() {
               }
             }}
           >
-            <i className="ri-refresh-line" /> Start again
+            <i className="ri-refresh-line" />
           </button>
+          {/* <button onClick={seedDb}>seed data</button> */}
+          {/* <button>
+            <i className={`ri-${editing ? 'check-line' : 'edit-line'}`} />
+            Filters
+          </button> */}
+          <button
+              // className="btn-new-item"
+              className={`btn-new-item ${showNewBrandForm ? 'active' : ''}`}
+              onClick={() => setShowNewBrandForm(true)}
+            >
+              <i className="ri-add-line" /> New Brand
+            </button>
           <button
             className={`btn-edit-toggle ${editing ? 'active' : ''}`}
             onClick={() => setEditing(e => !e)}
           >
-            <i className={`ri-${editing ? 'check-line' : 'edit-line'}`} />
-            {editing ? 'Done' : 'Edit'}
+            {editing ? 'Hide Delete' : 'Show Delete'}
           </button>
+          <button>Filter</button>
         </div>
 
         <div className="header-controls">
@@ -262,12 +274,7 @@ function App() {
               </button>
             </div>
           ) : (
-            <div
-              className="btn-new-item"
-              onClick={() => setShowNewBrandForm(true)}
-            >
-              <i className="ri-add-line" /> New Brand
-            </div>
+            ''
           )}
         </div>
 

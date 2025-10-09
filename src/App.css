@@ -142,6 +142,11 @@ body { background: #fff; color: var(--text); }
   color: white;
 }
 
+button.active {
+  background: #FF8C00;    /* or any accent to show active */
+  color: white;
+}
+
 /* delete brand (in header) */
 .btn-delete-brand {
   margin-left: 8px;
