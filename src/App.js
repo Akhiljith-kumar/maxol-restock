@@ -37,6 +37,8 @@ function App() {
   const [newBrand, setNewBrand] = useState('');
   const [addingVariantBrand, setAddingVariantBrand] = useState(null);
   const [newVariant, setNewVariant] = useState('');
+  const [showFilterPopup, setShowFilterPopup] = useState(false);
+  const [showOnlyNeeded, setShowOnlyNeeded] = useState(false);
 
   const seedDb = async () => {
     if (!window.confirm('Seed Firestore with the predefined items?')) return;
@@ -241,7 +243,6 @@ function App() {
             Filters
           </button> */}
           <button
-              // className="btn-new-item"
               className={`btn-new-item ${showNewBrandForm ? 'active' : ''}`}
               onClick={() => setShowNewBrandForm(true)}
             >
@@ -253,7 +254,9 @@ function App() {
           >
             {editing ? 'Hide Delete' : 'Show Delete'}
           </button>
-          <button>Filter</button>
+          <button
+          onClick={() => setShowFilterPopup(true)}
+          >Filter</button>
         </div>
 
         <div className="header-controls">
@@ -422,6 +425,32 @@ function App() {
           </button>
         ))}
       </nav>
+      
+      {showFilterPopup && (
+        <div className="popup-overlay">
+          <div className="popup">
+            <div>
+              <h4>Under development</h4>
+              {/* <h3>Filter Options</h3> */}
+            
+              <button
+                className={`popup-filter-btn ${showNewBrandForm ? 'active' : ''}`}
+                  onClick={() => {
+                    setShowOnlyNeeded(prev => !prev);
+                    setShowFilterPopup(false); // close popup after applying
+                  }}
+                >
+               {showOnlyNeeded ? 'Show All Items' : 'Show Items That Need Restocking'}
+      </button>
+            </div>
+
+            <button className='close-button' onClick={() => setShowFilterPopup(false)}>
+              <i className="ri-close-line" /> Close
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
