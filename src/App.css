@@ -144,7 +144,7 @@ body { background: #fff; color: var(--text); }
 
 button.active {
   background: #FF8C00;    /* or any accent to show active */
-  color: white;
+  color: rgb(2, 2, 2);
 }
 
 /* delete brand (in header) */

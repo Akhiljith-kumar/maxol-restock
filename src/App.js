@@ -285,7 +285,15 @@ function App() {
 
       {/* MAIN LIST */}
       <section className="section">
-        {Object.entries(activeData).sort(byEntryKey).map(([brand, variants]) => (
+        {Object.entries(activeData).sort(byEntryKey).map(([brand, variants]) => {
+            const visibleVariants = Object.entries(variants)
+            .filter(([_, vals]) => !showOnlyNeeded || vals.count > 0)
+            .sort(byEntryKey);
+
+          // If no variants left after filtering, don't render this brand
+          if (visibleVariants.length === 0) return null;
+
+          return (
           <div key={brand} className="brand-block">
             <h1 className="brand-header">
               {brand.charAt(0).toUpperCase() + brand.slice(1)}
@@ -325,7 +333,7 @@ function App() {
               </div>
             )}
 
-            {Object.entries(variants).sort(byEntryKey).map(([variant, vals]) => (
+            {visibleVariants.map(([variant, vals]) => (
               <div className={`item-row ${vals.count > 0 || vals.box ? 'need-to-stock-indicator' : ''}`} key={variant}>
                 <input
                   className='item-tick'
@@ -410,7 +418,9 @@ function App() {
               </div>
             ))}
           </div>
-        ))}
+        )
+        }
+        )}
       </section>
 
       {/* STATIC BOTTOM NAV */}
@@ -430,18 +440,17 @@ function App() {
         <div className="popup-overlay">
           <div className="popup">
             <div>
-              <h4>Under development</h4>
-              {/* <h3>Filter Options</h3> */}
+              <h3>Filter Options</h3>
             
               <button
-                className={`popup-filter-btn ${showNewBrandForm ? 'active' : ''}`}
+                className={`popup-filter-btn ${showOnlyNeeded ? 'active' : ''}`}
                   onClick={() => {
                     setShowOnlyNeeded(prev => !prev);
                     setShowFilterPopup(false); // close popup after applying
                   }}
                 >
-               {showOnlyNeeded ? 'Show All Items' : 'Show Items That Need Restocking'}
-      </button>
+               {showOnlyNeeded ? 'Show All Items' : 'Restock Items Only'}
+            </button>
             </div>
 
             <button className='close-button' onClick={() => setShowFilterPopup(false)}>
